@@ -2,6 +2,7 @@
  * GET home page.
  */
 var fs = require('fs');
+var parseString = require('xml2js').parseString;
 var models = require('../models/app.js');
 var AppModel = models.App;
 var AppStr = models.AppStr;
@@ -14,22 +15,26 @@ module.exports.controller = function(app) {
         });
     });
     app.get('/boss/apps', app.locals.checkAuth, function(req, res) {
-        AppModel.find({user: req.session.user._id}, function(err, apps){
-            if(apps){
+        AppModel.find({
+            user: req.session.user._id
+        }, function(err, apps) {
+            if (apps) {
                 res.render('boss/apps', {
                     title: 'Apps',
                     user: req.session.user,
                     apps: apps
                 });
-            }else{
+            } else {
                 res.send('empty')
             }
         });
     });
     app.get('/boss/app/:id', app.locals.checkAuth, function(req, res) {
-        AppModel.findById(req.params.id, function(err, app_obj){
-            AppStr.find({app:app_obj._id}, function(err, appstrs){
-                res.render('boss/app', {                    
+        AppModel.findById(req.params.id, function(err, app_obj) {
+            AppStr.find({
+                app: app_obj._id
+            }, function(err, appstrs) {
+                res.render('boss/app', {
                     title: app_obj.name,
                     user: req.session.user,
                     app: app_obj,
@@ -39,17 +44,29 @@ module.exports.controller = function(app) {
         });
     });
     app.all('/boss/app/:id/upload', app.locals.checkAuth, function(req, res) {
-        if(req.method == 'POST'){
-            var string_resouces = fs.readFileSync(req.files.file.path, 'utf8');
-        }else{
-            AppModel.findById(req.params.id, function(err, app_obj){
+        AppModel.findById(req.params.id, function(err, app_obj) {
+            if (req.method == 'POST') {
+                var string_resources = fs.readFileSync(req.files.file.path, 'utf8');
+                parseString(string_resources, function(err, result) {
+                    for (i in result.resources.string) {
+                        AppStr.create({
+                            name: result.resources.string[i].$.name,
+                            value: result.resources.string[i]._,
+                            app: app_obj._id
+                        }, function(err, appstr){
+                            console.log(appstr);
+                        });
+                    }
+                    res.redirect('/boss/app/' + app_obj._id);
+                });
+            } else {
                 res.render('boss/app_upload', {
                     title: app_obj.name,
                     user: req.session.user,
                     app: app_obj,
                 });
-            });
-        }
+            }
+        });
     });
     app.all('/boss/apps/create', app.locals.checkAuth, function(req, res) {
         if (req.method == 'POST') {
@@ -62,7 +79,7 @@ module.exports.controller = function(app) {
                     res.redirect('/boss/apps')
                 }
             })
-        }else{
+        } else {
             res.render('boss/apps_create', {
                 title: 'Create',
                 user: req.session.user,
