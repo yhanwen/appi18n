@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    h1 Register
+    if msg
+        div.alert.alert-danger
+            p= msg
+    div
+        form.form(method='post')
+            div.form-group
+                label Email:
+                input.form-control(name='email', placeholder='Email')
+            div.form-group
+                label Password:
+                input.form-control(name='password', placeholder='Password')
+            div.form-group
+                button.btn.btn-primary(type='submit') Register
+    div
+        p
+            a(href="/auth/facebook") Facebook
+        p
+            a(href="#") Twitter
+        p
+            a(href="#") Google

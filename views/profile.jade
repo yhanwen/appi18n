@@ -1,0 +1,45 @@
+extends layout
+
+block content
+    h1 Account Settings
+    ul.nav.nav-tabs#myTab
+        li.active
+            a(href="#Profile", data-toggle="tab") Profile
+        li
+            a(href="#Password", data-toggle="tab") Password
+        li
+            a(href="#Bind_Your_Account", data-toggle="tab") Bind Your Account
+    div.tab-content
+        div.tab-pane.active#Profile
+            h3 Profile
+            form.form(method='post')
+                div.form-group
+                    label Email:
+                    input.form-control(name='email', placeholder='Email', value=user.email)
+                div.form-group
+                    label Nickname:
+                    input.form-control(name='nickname', placeholder='Nickname', value=user.nickname)
+                div.form-group
+                    label Languages:
+                    textarea.form-control(name='languages', placeholder='Languages')= user.languages
+                div.form-group
+                    button.btn.btn-primary(type='submit', name='set_profile', value='1') Save
+        div.tab-pane#Password
+            h3 Password
+            form.form(method='post')
+                div.form-group
+                    label Password:
+                    input.form-control(name='password', placeholder='Password')
+                div.form-group
+                    button.btn.btn-danger(type='submit', name='set_password', value='1') Save
+        div.tab-pane#Bind_Your_Account
+            h3 Bind Your Account
+            form.form(method='post')
+                div.form-group
+                    label Email:
+                    input.form-control(name='email', placeholder='Email', value=user.email)
+                div.form-group
+                    label Password:
+                    input.form-control(name='password', placeholder='Password')
+                div.form-group
+                    button.btn.btn-primary(type='submit', name='set_account', value='1') Save
