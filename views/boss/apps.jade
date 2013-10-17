@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+    h1= 'API Test' 
+    if user
+        h2 Hi #{user.email}
+    table.table
+        tr
+            th Name
+            th Description
+            th Origin
+            th Destination
+        for app in apps
+            tr
+                td
+                    a(href='/boss/app/#{app._id}') #{app.name}
+                td #{app.description}
+                td #{app.origin}
+                td #{app.destination}

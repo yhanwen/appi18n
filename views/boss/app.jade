@@ -1,0 +1,17 @@
+extends ../layout
+
+block content
+    h1= title 
+    a.btn.btn-primary.pull-right(href="/boss/app/#{app._id}/upload") Upload String Resources XML
+    h3 Strings
+    table.table
+        tr
+            th Name
+            th Value
+            th Results
+        for appstr in appstrs
+            tr
+                td
+                    a(href='#') #{appstr.name}
+                td #{appstr.value}
+                td 0

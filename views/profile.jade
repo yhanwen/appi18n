@@ -7,8 +7,8 @@ block content
             a(href="#Profile", data-toggle="tab") Profile
         li
             a(href="#Password", data-toggle="tab") Password
-        li
-            a(href="#Bind_Your_Account", data-toggle="tab") Bind Your Account
+        //li
+        //    a(href="#Bind_Your_Account", data-toggle="tab") Bind Your Account
     div.tab-content
         div.tab-pane.active#Profile
             h3 Profile
@@ -16,9 +16,6 @@ block content
                 div.form-group
                     label Email:
                     input.form-control(name='email', placeholder='Email', value=user.email)
-                div.form-group
-                    label Nickname:
-                    input.form-control(name='nickname', placeholder='Nickname', value=user.nickname)
                 div.form-group
                     label Languages:
                     textarea.form-control(name='languages', placeholder='Languages')= user.languages

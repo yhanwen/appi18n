@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+    h1= 'API Test' 
+    if user
+        h2 Hi #{user.email}
+    ul
+        if user
+            li
+                a(href='/boss/apps') apps
+            li
+                a(href='/boss/apps/create') create apps

@@ -1,0 +1,25 @@
+extends ../layout
+
+block content
+    h1= 'API Test' 
+    if user
+        h2 Hi #{user.email}
+    form.form(method='post')
+        div.form-group
+            label Name:
+            input.form-control(name='name', placeholder='App Name')
+        div.form-group
+            label Description:
+            input.form-control(name='description', placeholder='Description')
+        div.form-group
+            label Origin:
+            select.form-control(name='origin', placeholder='Origin Language')
+                for language in languages
+                    option #{language}
+        div.form-group
+            label Destination:
+            select.form-control(name='destination', placeholder='Destination Language')
+                for language in languages
+                    option #{language}
+        div.form-group
+                button.btn.btn-primary(type='submit') Save

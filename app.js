@@ -31,6 +31,16 @@ app.use(passport.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.locals({
+    languages: ['English', 'Chinese', 'Italian', 'Japanese', 'Korean', 'Spanish'],
+    checkAuth: function (req, res, next) {
+        if (!req.session.user) {
+            res.send('Please <a href="/auth/login">Login First</a>');
+        } else {
+            next();
+        }
+    }
+});
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());

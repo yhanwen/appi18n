@@ -9,10 +9,13 @@ block content
         form.form(method='post')
             div.form-group
                 label Email:
-                input.form-control(name='email', placeholder='Email')
+                input.form-control(name='email', placeholder='Email', value=user.email)
             div.form-group
                 label Password:
                 input.form-control(name='password', placeholder='Password')
+            div.form-group
+                label Languages:
+                textarea.form-control(name='languages', placeholder='Languages')= user.languages
             div.form-group
                 button.btn.btn-primary(type='submit') Register
     div

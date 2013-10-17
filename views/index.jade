@@ -1,5 +1,21 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    h1= 'API Test' 
+    if user
+        h2 Hi #{user.email}
+    ul
+        if user
+            li
+                a(href='/auth/logout') logout
+            li
+                a(href='/auth/profile') profile
+            li
+                a(href='/boss') boss
+            li
+                a(href='/worker') worker
+        else        
+            li
+                a(href='/auth/register') register
+            li
+                a(href='/auth/login') login

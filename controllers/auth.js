@@ -38,42 +38,25 @@ passport.use(new FacebookStrategy({
                 for (l in profile._json.languages) {
                     languages.push(profile._json.languages[l].name)
                 }
-                User.create({
+                var user = {
                     facebook: profile.id,
                     email: profile.emails[0].value,
                     languages: languages
-                }, function(err, user) {
-                    if (err) {
-                        done(null, err);
-                    }
-                    if (user) {
-                        done(null, user);
-                    } else {
-                        done(null, null)
-                    }
-                })
+                }
+                done(null, user);
             }
 
         });
     }));
-
-function checkAuth(req, res, next) {
-    if (!req.session.user) {
-        res.send('Please <a href="/auth/login">Login First</a>');
-    } else {
-        next();
-    }
-}
 
 module.exports.controller = function(app) {
     app.all('/auth/login', function(req, res) {
         if (req.session.passport.user) {
             User.findById(req.session.passport.user._id, function(err, user) {
                 req.session.user = user;
-                res.redirect('/')
+                res.redirect('/');
             });
-        }
-        else if (req.method == 'POST') {
+        } else if (req.method == 'POST') {
             User.findOne(req.body, function(err, user) {
                 if (user) {
                     req.session.user = user;
@@ -84,33 +67,42 @@ module.exports.controller = function(app) {
                     });
                 }
             });
-        }
-        else{
+        } else {
             res.render('login');
         }
     });
     app.all('/auth/register', function(req, res) {
-        if (req.session.user) {
-            // already login            
-            res.redirect('/');
-        }
-        else if (req.method == 'POST') {
-            User.findOne(req.body, function(err, user) {
+        if (req.method == 'POST') {
+            var user = req.session.passport.user;
+            user.password = req.body['password'];
+            User.create(user, function(err, user) {
+                if (err) res.send(err);
+                if(user){                    
+                    req.session.user = user;
+                    res.redirect('/');
+                }else{
+                    res.send('err');
+                }
+            });
+
+        } else if (req.session.passport.user && req.session.passport.user._id) {
+            User.findById(req.session.passport.user._id, function(err, user) {
+                // already have an account
                 if (user) {
                     req.session.user = user;
                     res.redirect('/')
                 } else {
-                    res.render('register', {
-                        msg: 'Login Failed.'
-                    });
+                    res.send('error'); //Todo error
                 }
             });
-        }
-        else{
-            res.render('register');
+        } else {
+            res.render('register', {
+                user: req.session.passport.user || {}
+            });
         }
     });
     app.get('/auth/logout', function(req, res) {
+        delete req.session.user;
         req.logout();
         res.redirect('/');
     });
@@ -119,12 +111,12 @@ module.exports.controller = function(app) {
     }));
     app.get('/auth/facebook/callback',
         passport.authenticate('facebook', {
-            successRedirect: '/auth/login',
-            failureRedirect: '/auth/login'
+            successRedirect: '/auth/register',
+            failureRedirect: '/auth/register'
         })
     );
 
-    app.all('/auth/profile', checkAuth, function(req, res) {
+    app.all('/auth/profile', app.locals.checkAuth, function(req, res) {
         if (req.method == 'POST') {
             if (req.body.set_profile || req.body.set_password) {
                 User.findByIdAndUpdate(
